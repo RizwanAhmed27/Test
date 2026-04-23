@@ -1,33 +1,69 @@
-# Commission Assistant AI
+# Seyalla Backend (FastAPI)
 
-A lightweight Python assistant that accepts commission details from a user and behaves like a personal assistant for that commission workflow.
+Backend API for Seyalla (Seyal app AI layer), built as a practical modular FastAPI service.
 
-## What it does
+## Project structure
 
-- Captures structured commission details (project type, budget, deadline, style, notes).
-- Maintains per-user session state in memory.
-- Responds like a personal assistant by:
-  - summarizing constraints,
-  - generating next actions,
-  - drafting client-ready messages,
-  - answering follow-up planning questions.
-
-## Quick start
-
-```bash
-python3 assistant.py
+```text
+app/
+  main.py                  # FastAPI app factory + router mount
+  core/config.py           # Environment/config settings
+  api/routes.py            # HTTP endpoints
+  models/schemas.py        # Request/response contracts
+  data/seed.py             # Seed/sample data (in-memory v1)
+  services/
+    container.py           # Service wiring
+    intent_router.py
+    analytics_service.py
+    summary_service.py
+    recommendation_service.py
+    anomaly_detection.py   # Reusable anomaly logic
+    anomaly_service.py
+    role_guard.py          # Role-based access checks
+    chat_service.py
+  db/schema.sql            # PostgreSQL/Supabase-friendly schema
 ```
 
-Then paste messages such as:
+## Endpoints
+- `GET /health`
+- `POST /chat`
+- `POST /summary`
+- `POST /analytics`
+- `POST /anomalies`
+- `POST /recommendations`
 
-- `My commission is a logo redesign, budget $500, due in 2 weeks.`
-- `Prefer minimalist style and blue tones.`
-- `Draft a reply to confirm timeline.`
-- `What should I do next?`
+## Local run
 
-Type `exit` to quit.
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Start API:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+3. Open docs:
+   - Swagger UI: `http://127.0.0.1:8000/docs`
+   - ReDoc: `http://127.0.0.1:8000/redoc`
 
 ## Notes
+- Current implementation is seed-data based for quick iteration.
+- SQL schema in `app/db/schema.sql` is ready for migration to Supabase/PostgreSQL.
 
-- This implementation is intentionally dependency-free.
-- Session data is in-memory only and resets on restart.
+## Frontend (Phase 3)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Set API base URL if needed:
+
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000 npm run dev
+```
+
+## Deployment (Phase 4)
+
+See practical deployment playbook: `docs/DEPLOYMENT.md`.
